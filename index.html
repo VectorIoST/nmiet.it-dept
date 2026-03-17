@@ -110,7 +110,7 @@
   .particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--neon-blue);animation:floatUp linear infinite;opacity:.4;}
   @keyframes floatUp{0%{transform:translateY(100vh) translateX(0);opacity:0;}10%{opacity:.4;}90%{opacity:.4;}100%{transform:translateY(-10vh) translateX(var(--drift));opacity:0;}}
 
-  /* ═══════ MODAL ═══════ */
+  /* MODAL */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(2,2,8,.94);z-index:500;align-items:flex-start;justify-content:center;backdrop-filter:blur(10px);padding:16px;overflow-y:auto;}
   .modal-overlay.open{display:flex;}
   .modal-box{background:linear-gradient(145deg,#07071e,#0c0c2e);border:1px solid rgba(0,212,255,.28);width:100%;max-width:580px;position:relative;animation:fadeDown .35s ease;margin:auto;}
@@ -181,13 +181,16 @@
   .file-remove{background:none;border:none;color:var(--neon-pink);font-size:.7rem;font-family:'Space Mono',monospace;cursor:pointer;margin-top:4px;letter-spacing:.06em;}
 
   .txn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-
-  /* FIX: receipt optional note */
   .receipt-optional{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--text-dim);margin-top:6px;letter-spacing:.06em;opacity:.7;}
 
   .fs-info-box{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);padding:10px 14px;margin-bottom:12px;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text-dim);letter-spacing:.06em;line-height:1.7;}
 
-  /* Buttons */
+  /* Progress bar for upload */
+  .upload-progress{display:none;margin-top:8px;}
+  .upload-progress-bar{height:3px;background:rgba(0,212,255,.15);border-radius:2px;overflow:hidden;}
+  .upload-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple));transition:width .3s;}
+  .upload-progress-text{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--neon-blue);margin-top:5px;letter-spacing:.06em;}
+
   .btn-next{width:100%;padding:16px;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff;border:none;font-family:'Space Mono',monospace;font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:filter .2s,transform .2s;margin-top:8px;}
   .btn-next:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-2px);}
   .btn-next:disabled{opacity:.5;cursor:not-allowed;transform:none;}
@@ -200,7 +203,6 @@
   .modal-error{display:none;background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.3);color:var(--neon-pink);font-family:'Space Mono',monospace;font-size:.66rem;padding:10px 14px;margin-top:10px;letter-spacing:.04em;line-height:1.6;}
   .modal-note{font-family:'Space Mono',monospace;font-size:.59rem;color:var(--text-dim);text-align:center;margin-top:12px;letter-spacing:.07em;line-height:1.7;}
 
-  /* FIX: status banner */
   .fs-status{display:none;padding:11px 14px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.06em;line-height:1.6;margin-top:10px;border:1px solid;}
   .fs-status.submitting{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.06);color:var(--neon-blue);}
   .fs-status.error{border-color:rgba(255,45,120,.3);background:rgba(255,45,120,.08);color:var(--neon-pink);}
@@ -424,7 +426,7 @@
     <!-- STEP 1 -->
     <div class="modal-step active" id="step1">
       <div class="modal-inner">
-        <div class="step-indicator" aria-label="Step 1 of 2">
+        <div class="step-indicator">
           <div class="step-dot active" id="dot1">1</div>
           <div class="step-line" id="line1"></div>
           <div class="step-dot" id="dot2">2</div>
@@ -471,9 +473,7 @@
           <textarea id="f_idea" placeholder="Describe your project idea in 2-3 sentences..."></textarea>
         </div>
 
-        <button class="btn-next" id="btn1" onclick="goToStep2()">
-          Next — Pay ₹349 &nbsp;→
-        </button>
+        <button class="btn-next" onclick="goToStep2()">Next — Pay ₹349 &nbsp;→</button>
         <div class="modal-error" id="err1" role="alert"></div>
         <p class="modal-note">Queries: <strong style="color:var(--neon-blue)">Sandesh 8668916936</strong> · <strong style="color:var(--neon-blue)">Tejas 80079 53204</strong></p>
       </div>
@@ -482,7 +482,7 @@
     <!-- STEP 2 -->
     <div class="modal-step" id="step2">
       <div class="modal-inner">
-        <div class="step-indicator" aria-label="Step 2 of 2">
+        <div class="step-indicator">
           <div class="step-dot done">✓</div>
           <div class="step-line done"></div>
           <div class="step-dot active">2</div>
@@ -495,21 +495,18 @@
 
         <div class="qr-section">
           <div class="qr-box">
-            <img src="upi-qr.png" alt="UPI QR Code" id="qrImg"
+            <img src="upi-qr.png" alt="UPI QR Code"
                  onerror="this.style.display='none';document.getElementById('qrFallback').style.display='block'">
             <div class="qr-placeholder" id="qrFallback" style="display:none">
               <span>📲</span>
               <p>Place your<br><strong style="color:var(--neon-blue)">UPI QR</strong><br>image here<br><br><span style="color:var(--gold);font-size:.55rem;">filename: upi-qr.png</span></p>
             </div>
-            <div class="qr-corner tl"></div>
-            <div class="qr-corner tr"></div>
-            <div class="qr-corner bl"></div>
-            <div class="qr-corner br"></div>
+            <div class="qr-corner tl"></div><div class="qr-corner tr"></div>
+            <div class="qr-corner bl"></div><div class="qr-corner br"></div>
           </div>
           <div class="qr-info">
             <div class="qr-info-title">Registration Fee</div>
             <div class="qr-amount">₹349</div>
-            <!-- FIX: UPI ID is click-to-copy -->
             <div class="qr-upi" id="qrUpiId" onclick="copyUpi(this)" title="Click to copy UPI ID">sandeshshingankar8@okicici</div>
             <ul class="qr-steps">
               <li>Open any UPI app (GPay, PhonePe, Paytm…)</li>
@@ -524,7 +521,6 @@
         <div class="receipt-section">
           <div class="receipt-section-title">Upload Payment Receipt</div>
           <div class="file-drop" id="fileDrop">
-            <!-- FIX: accept more formats, no capture= so it works on desktop too -->
             <input type="file" id="receiptFile" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" onchange="handleFile(this)">
             <div class="file-drop-icon">📎</div>
             <div class="file-drop-text">
@@ -539,13 +535,16 @@
             <div class="file-name" id="fileName"></div>
             <button type="button" class="file-remove" onclick="removeFile()">✕ Remove</button>
           </div>
-          <!-- FIX: made receipt upload not strictly required with a note -->
-          <p class="receipt-optional">* If upload fails, note your UTR below — organizers can verify manually.</p>
+          <!-- Upload progress indicator -->
+          <div class="upload-progress" id="uploadProgress">
+            <div class="upload-progress-bar"><div class="upload-progress-fill" id="uploadFill"></div></div>
+            <div class="upload-progress-text" id="uploadText">Encoding receipt…</div>
+          </div>
+          <p class="receipt-optional">* If upload fails, enter UTR below — organizers can verify manually.</p>
 
           <div class="txn-row">
             <div class="form-group">
               <label for="f_utr">UTR / Transaction ID *</label>
-              <!-- FIX: removed minlength restriction, just required -->
               <input type="text" id="f_utr" placeholder="e.g. 612345678901" inputmode="numeric" autocomplete="off">
             </div>
             <div class="form-group">
@@ -563,8 +562,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="f_paidAt">Payment Date &amp; Time</label>
-            <!-- FIX: split into date + time for better mobile compatibility -->
+            <label>Payment Date &amp; Time</label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <input type="date" id="f_paidDate" style="width:100%;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.18);color:var(--text);padding:11px 14px;font-family:'Rajdhani',sans-serif;font-size:1rem;outline:none;appearance:none;-webkit-appearance:none;">
               <input type="time" id="f_paidTime" style="width:100%;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.18);color:var(--text);padding:11px 14px;font-family:'Rajdhani',sans-serif;font-size:1rem;outline:none;appearance:none;-webkit-appearance:none;">
@@ -573,7 +571,7 @@
         </div>
 
         <div class="fs-info-box">
-          ⚡ <strong style="color:var(--neon-blue)">Instant submission</strong> — Your registration is sent directly to the organizers. Receipt file is attached when possible; if file attachment fails, the form data is still submitted.
+          ☁️ <strong style="color:var(--neon-blue)">Powered by Google</strong> — Registration details saved to Google Sheets · Receipt image/PDF uploaded to Google Drive · Confirmation email sent automatically.
         </div>
 
         <button type="button" class="btn-submit" id="btn2" onclick="submitRegistration()">
@@ -593,17 +591,14 @@
         <div class="success-wrap">
           <span class="check">🎉</span>
           <h3>Registration Submitted!</h3>
-
           <div class="fs-badge">
             <div class="fs-badge-dot"></div>
-            <span id="submissionMethod">✅ Sent to organizers — no extra steps needed</span>
+            <span id="submissionMethod">✅ Saved to Google Sheets &amp; Drive</span>
           </div>
-
-          <p style="margin-bottom:8px;">Your registration has been <strong style="color:var(--green)">successfully received</strong> by the vector.io team. You'll be contacted on your email/phone.</p>
-
+          <p style="margin-bottom:8px;">Your registration has been <strong style="color:var(--green)">successfully received</strong>. Check your email for confirmation.</p>
           <div class="success-detail" id="successDetail"></div>
 
-          <div class="backup-label" style="margin-top:16px;">Also send via backup method (recommended)</div>
+          <div class="backup-label" style="margin-top:16px;">Also send via backup (recommended)</div>
           <div class="backup-cards">
             <div class="backup-card">
               <div class="backup-card-icon">💬</div>
@@ -651,20 +646,22 @@
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-// FIX: Replace this with your actual Formspree endpoint from formspree.io/new
-// Current value kept as-is; update to your real form ID.
-const FORMSPREE_URL      = 'https://formspree.io/f/xreyopoe';
+// ═══════════════════════════════════════════════════════════════════
+//  ▼▼▼  PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE  ▼▼▼
+// ═══════════════════════════════════════════════════════════════════
+const GOOGLE_SCRIPT_URL  = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+// ═══════════════════════════════════════════════════════════════════
+
 const UPI_ID             = 'sandeshshingankar8@okicici';
 const ORGANIZER_WHATSAPP = '918668916936';
 const LS_KEY             = 'vectorio_registrations';
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
+// ── STATE ─────────────────────────────────────────────────────────
 let formData    = {};
 let receiptFile = null;
 let savedEntry  = {};
 
-// ─── PARTICLES ────────────────────────────────────────────────────────────────
+// ── PARTICLES ─────────────────────────────────────────────────────
 (function(){
   const c = document.getElementById('particles');
   const colors = ['#00d4ff','#7b2fff','#ff2d78','#ffd700'];
@@ -676,23 +673,22 @@ let savedEntry  = {};
   }
 })();
 
-// ─── MOBILE NAV ───────────────────────────────────────────────────────────────
+// ── MOBILE NAV ────────────────────────────────────────────────────
 const navToggle = document.getElementById('navToggle');
 const navLinks  = document.getElementById('navLinks');
 navToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
 navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('active')));
 window.addEventListener('resize', () => { if(window.innerWidth>768) navLinks.classList.remove('active'); });
 
-// ─── SCROLL REVEAL ────────────────────────────────────────────────────────────
+// ── SCROLL REVEAL ─────────────────────────────────────────────────
 const obs = new IntersectionObserver(entries => {
   entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*80); obs.unobserve(e.target); } });
 },{threshold:.1});
 document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
 
-// ─── MODAL ────────────────────────────────────────────────────────────────────
+// ── MODAL ─────────────────────────────────────────────────────────
 function openModal(){
   navLinks.classList.remove('active');
-  // FIX: reset form fields on open so a second attempt starts clean
   resetForm();
   showStep('step1');
   document.getElementById('regModal').classList.add('open');
@@ -702,47 +698,30 @@ function closeModal(){
   document.getElementById('regModal').classList.remove('open');
   document.body.style.overflow='';
 }
-// Close on backdrop click
 document.getElementById('regModal').addEventListener('click', function(e){
   if(e.target === this) closeModal();
 });
-// Close on Escape key
 document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape' && document.getElementById('regModal').classList.contains('open')) closeModal();
+  if(e.key==='Escape' && document.getElementById('regModal').classList.contains('open')) closeModal();
 });
 
-// FIX: showStep scrolls the OVERLAY to top, not the modal-box
 function showStep(id){
   document.querySelectorAll('.modal-step').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // Scroll overlay to top
-  const overlay = document.getElementById('regModal');
-  overlay.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('regModal').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function resetForm(){
-  // Clear step 1 fields
-  ['f_team','f_leader','f_email','f_phone','f_college','f_idea'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
+  ['f_team','f_leader','f_email','f_phone','f_college','f_idea','f_utr','f_paidDate','f_paidTime']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('f_size').value = '';
-  // Clear step 2 fields
-  ['f_utr','f_paidDate','f_paidTime'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
-  document.getElementById('f_app').value = '';
+  document.getElementById('f_app').value  = '';
   removeFile();
-  clearErr('err1');
-  clearErr('err2');
-  document.getElementById('fsStatus').style.display = 'none';
-  // Re-enable submit button in case it was disabled from a previous attempt
+  clearErr('err1'); clearErr('err2');
+  const s = document.getElementById('fsStatus');
+  if(s) s.style.display='none';
   const btn2 = document.getElementById('btn2');
-  if(btn2){
-    btn2.disabled = false;
-    btn2.innerHTML = '✅ &nbsp;Confirm &amp; Submit Registration';
-  }
+  if(btn2){ btn2.disabled=false; btn2.innerHTML='✅ &nbsp;Confirm &amp; Submit Registration'; }
 }
 
 function showErr(id, msg){
@@ -755,28 +734,26 @@ function clearErr(id){
   if(el){ el.textContent=''; el.style.display='none'; }
 }
 
-// ─── COPY UPI ID ──────────────────────────────────────────────────────────────
+// ── COPY UPI ID ───────────────────────────────────────────────────
 function copyUpi(el){
-  const text = UPI_ID;
   const orig = el.textContent;
   navigator.clipboard
-    ? navigator.clipboard.writeText(text).then(()=>{ el.textContent='✓ Copied!'; setTimeout(()=>{ el.textContent=orig; },1800); })
-    : (function(){ const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); el.textContent='✓ Copied!'; setTimeout(()=>{ el.textContent=orig; },1800); })();
+    ? navigator.clipboard.writeText(UPI_ID).then(()=>{ el.textContent='✓ Copied!'; setTimeout(()=>el.textContent=orig,1800); })
+    : (()=>{ const ta=document.createElement('textarea');ta.value=UPI_ID;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); el.textContent='✓ Copied!'; setTimeout(()=>el.textContent=orig,1800); })();
 }
 
-// ─── FILE HANDLING ────────────────────────────────────────────────────────────
+// ── FILE HANDLING ─────────────────────────────────────────────────
 function handleFile(input){
   const file = input.files[0];
   if(!file) return;
   if(file.size > 5 * 1024 * 1024){
     showErr('err2','File too large. Max 5 MB. Please compress your screenshot.');
-    input.value='';
-    return;
+    input.value=''; return;
   }
   receiptFile = file;
   document.getElementById('fileName').textContent = '📎 ' + file.name;
   document.getElementById('filePreview').style.display = 'block';
-  document.getElementById('fileDrop').style.display = 'none';
+  document.getElementById('fileDrop').style.display   = 'none';
   clearErr('err2');
 
   if(file.type.startsWith('image/')){
@@ -787,13 +764,8 @@ function handleFile(input){
       img.style.display = 'block';
       document.getElementById('fileIconPreview').style.display = 'none';
     };
-    reader.onerror = () => {
-      document.getElementById('previewImg').style.display = 'none';
-      document.getElementById('fileIconPreview').style.display = 'block';
-    };
     reader.readAsDataURL(file);
   } else {
-    // PDF or other — show icon
     document.getElementById('previewImg').style.display = 'none';
     document.getElementById('fileIconPreview').style.display = 'block';
   }
@@ -801,16 +773,12 @@ function handleFile(input){
 
 function removeFile(){
   receiptFile = null;
-  const ri = document.getElementById('receiptFile');
-  if(ri) ri.value='';
-  const fp = document.getElementById('filePreview');
-  if(fp) fp.style.display='none';
-  const fd = document.getElementById('fileDrop');
-  if(fd) fd.style.display='block';
-  const pi = document.getElementById('previewImg');
-  if(pi){ pi.src=''; pi.style.display='none'; }
-  const fi = document.getElementById('fileIconPreview');
-  if(fi) fi.style.display='none';
+  const ri = document.getElementById('receiptFile'); if(ri) ri.value='';
+  const fp = document.getElementById('filePreview'); if(fp) fp.style.display='none';
+  const fd = document.getElementById('fileDrop');    if(fd) fd.style.display='block';
+  const pi = document.getElementById('previewImg');  if(pi){ pi.src=''; pi.style.display='none'; }
+  const fi = document.getElementById('fileIconPreview'); if(fi) fi.style.display='none';
+  const up = document.getElementById('uploadProgress'); if(up) up.style.display='none';
 }
 
 // Drag-and-drop
@@ -828,17 +796,15 @@ if(drop){
         document.getElementById('receiptFile').files = dt.files;
         handleFile(document.getElementById('receiptFile'));
       } catch(err) {
-        // DataTransfer not supported on some browsers; show manual upload prompt
         showErr('err2','Drag-and-drop not supported on this browser. Please click to upload.');
       }
     }
   });
 }
 
-// ─── STEP 1 → STEP 2 ──────────────────────────────────────────────────────────
+// ── STEP 1 → STEP 2 ───────────────────────────────────────────────
 function goToStep2(){
   clearErr('err1');
-
   const team    = document.getElementById('f_team').value.trim();
   const leader  = document.getElementById('f_leader').value.trim();
   const size    = document.getElementById('f_size').value;
@@ -847,7 +813,6 @@ function goToStep2(){
   const college = document.getElementById('f_college').value.trim();
   const idea    = document.getElementById('f_idea').value.trim();
 
-  // FIX: individual field error messages for better UX
   if(!team)    { document.getElementById('f_team').focus();    return showErr('err1','Please enter your team name.'); }
   if(!leader)  { document.getElementById('f_leader').focus();  return showErr('err1','Please enter the leader name.'); }
   if(!size)    { document.getElementById('f_size').focus();    return showErr('err1','Please select team size.'); }
@@ -859,37 +824,42 @@ function goToStep2(){
 
   formData = { team, leader, size, email, phone, college, idea: idea || 'Not provided' };
 
-  // Pre-fill today's date
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm   = String(today.getMonth()+1).padStart(2,'0');
-  const dd   = String(today.getDate()).padStart(2,'0');
-  const hh   = String(today.getHours()).padStart(2,'0');
-  const min  = String(today.getMinutes()).padStart(2,'0');
-  document.getElementById('f_paidDate').value = `${yyyy}-${mm}-${dd}`;
-  document.getElementById('f_paidTime').value = `${hh}:${min}`;
+  // Pre-fill today's date/time
+  const now = new Date();
+  document.getElementById('f_paidDate').value = now.toISOString().slice(0,10);
+  document.getElementById('f_paidTime').value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
   showStep('step2');
 }
 
-function goToStep1(){
-  clearErr('err2');
-  showStep('step1');
+function goToStep1(){ clearErr('err2'); showStep('step1'); }
+
+// ── READ FILE AS BASE64 ────────────────────────────────────────────
+function readFileAsBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => {
+      // result is "data:mime/type;base64,XXXXX" — strip the prefix
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
-// ─── SUBMIT → FORMSPREE ───────────────────────────────────────────────────────
+// ── SUBMIT → GOOGLE APPS SCRIPT ───────────────────────────────────
 async function submitRegistration(){
   clearErr('err2');
 
-  const utr     = document.getElementById('f_utr').value.trim();
-  const app     = document.getElementById('f_app').value || 'Not specified';
-  const paidDate= document.getElementById('f_paidDate').value;
-  const paidTime= document.getElementById('f_paidTime').value;
+  const utr      = document.getElementById('f_utr').value.trim();
+  const app      = document.getElementById('f_app').value || 'Not specified';
+  const paidDate = document.getElementById('f_paidDate').value;
+  const paidTime = document.getElementById('f_paidTime').value;
 
-  // FIX: Validate UTR is non-empty only (no strict length check)
   if(!utr){
     document.getElementById('f_utr').focus();
-    return showErr('err2','Please enter the UTR / Transaction ID shown in your payment receipt.');
+    return showErr('err2','Please enter the UTR / Transaction ID from your payment receipt.');
   }
 
   const paidAtDisplay = (paidDate || paidTime)
@@ -897,62 +867,83 @@ async function submitRegistration(){
     : 'Not specified';
 
   savedEntry = {
-    ...formData,
-    utr, app, paidAtDisplay,
+    ...formData, utr, app, paidAtDisplay,
     receiptName: receiptFile ? receiptFile.name : 'Not uploaded',
     submittedAt: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'}),
   };
 
-  // Build FormData
-  const fd = new FormData();
-  // FIX: Added _replyto so Formspree sends a confirmation email to the registrant
-  fd.append('_replyto',     savedEntry.email);
-  fd.append('_subject',     `[vector.io Hackathon 2026] Registration – ${savedEntry.team}`);
-  fd.append('team_name',    savedEntry.team);
-  fd.append('leader_name',  savedEntry.leader);
-  fd.append('team_size',    savedEntry.size);
-  fd.append('email',        savedEntry.email);
-  fd.append('phone',        savedEntry.phone);
-  fd.append('college',      savedEntry.college);
-  fd.append('project_idea', savedEntry.idea);
-  fd.append('utr_txn_id',   savedEntry.utr);
-  fd.append('payment_app',  savedEntry.app);
-  fd.append('payment_time', savedEntry.paidAtDisplay);
-  fd.append('upi_id',       UPI_ID);
-  fd.append('amount_paid',  '349');
-  fd.append('submitted_at', savedEntry.submittedAt);
-
-  // FIX: Attach file only if present and under 5MB; note free Formspree plans
-  // do NOT support file attachments — the form data still submits successfully
-  // without the file. Receipt can be sent via WhatsApp as a backup.
-  if(receiptFile && receiptFile.size <= 5 * 1024 * 1024){
-    fd.append('payment_receipt', receiptFile, receiptFile.name);
-  }
-
-  // Loading state
+  // ── Loading state ─────────────────────────────────────────────
   const btn = document.getElementById('btn2');
   btn.disabled = true;
-  btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⏳</span> &nbsp;Submitting…';
 
   const fsStatus = document.getElementById('fsStatus');
   fsStatus.className = 'fs-status submitting';
-  fsStatus.textContent = '⏳ Sending your registration to the organizers…';
   fsStatus.style.display = 'block';
 
+  // ── Encode receipt file to base64 ────────────────────────────
+  let receiptData = null;
+  let receiptMime = null;
+
+  if(receiptFile){
+    try {
+      const prog = document.getElementById('uploadProgress');
+      const fill = document.getElementById('uploadFill');
+      const txt  = document.getElementById('uploadText');
+      prog.style.display = 'block';
+      txt.textContent = 'Encoding receipt file…';
+      fill.style.width = '40%';
+
+      receiptData = await readFileAsBase64(receiptFile);
+      receiptMime = receiptFile.type || 'application/octet-stream';
+
+      fill.style.width = '80%';
+      txt.textContent  = 'Uploading to Google Drive…';
+    } catch(err){
+      console.warn('File encoding error:', err);
+    }
+  }
+
+  // ── Build JSON payload ────────────────────────────────────────
+  const payload = {
+    team_name:    savedEntry.team,
+    leader_name:  savedEntry.leader,
+    team_size:    savedEntry.size,
+    email:        savedEntry.email,
+    phone:        savedEntry.phone,
+    college:      savedEntry.college,
+    project_idea: savedEntry.idea,
+    utr_txn_id:   savedEntry.utr,
+    payment_app:  savedEntry.app,
+    payment_time: savedEntry.paidAtDisplay,
+    receipt_name: receiptFile ? receiptFile.name : null,
+    receipt_mime: receiptMime,
+    receipt_data: receiptData,   // base64 string or null
+  };
+
+  fsStatus.textContent = '⏳ Sending to Google Sheets & Drive…';
+  btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite">⏳</span> &nbsp;Submitting…';
+
   try {
-    const res = await fetch(FORMSPREE_URL, {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
       method:  'POST',
-      headers: { 'Accept': 'application/json' },
-      body:    fd,
+      headers: { 'Content-Type': 'text/plain' }, // avoids CORS preflight
+      body:    JSON.stringify(payload),
     });
 
-    if(res.ok){
+    const data = await res.json();
+
+    // Hide progress bar
+    const prog = document.getElementById('uploadProgress');
+    const fill = document.getElementById('uploadFill');
+    if(prog){ fill.style.width='100%'; setTimeout(()=>prog.style.display='none',600); }
+
+    if(data.success){
       // Save to localStorage
       try {
-        const existing = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+        const existing = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
         existing.push(savedEntry);
         localStorage.setItem(LS_KEY, JSON.stringify(existing));
-      } catch(e){ /* localStorage may be blocked in private mode */ }
+      } catch(e){}
 
       // Populate success screen
       document.getElementById('successDetail').innerHTML =
@@ -960,57 +951,46 @@ async function submitRegistration(){
         `<strong>Leader</strong> &nbsp;&nbsp;&nbsp;&nbsp; ${savedEntry.leader}<br>`+
         `<strong>Email</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${savedEntry.email}<br>`+
         `<strong>Phone</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${savedEntry.phone}<br>`+
-        `<strong>College</strong> &nbsp;&nbsp;&nbsp;&nbsp;${savedEntry.college}<br>`+
-        `<strong>UTR/Txn</strong> &nbsp;&nbsp;&nbsp;${savedEntry.utr}<br>`+
-        `<strong>Paid via</strong> &nbsp;&nbsp;&nbsp;${savedEntry.app}<br>`+
+        `<strong>College</strong> &nbsp;&nbsp;&nbsp; ${savedEntry.college}<br>`+
+        `<strong>UTR/Txn</strong> &nbsp;&nbsp; ${savedEntry.utr}<br>`+
+        `<strong>Paid via</strong> &nbsp;&nbsp; ${savedEntry.app}<br>`+
         `<strong>Amount</strong> &nbsp;&nbsp;&nbsp;&nbsp; ₹349<br>`+
-        `<strong>Receipt</strong> &nbsp;&nbsp;&nbsp;&nbsp;${savedEntry.receiptName}`;
+        `<strong>Receipt</strong> &nbsp;&nbsp;&nbsp;&nbsp;${savedEntry.receiptName}<br>`+
+        `<strong>Drive</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${data.receiptSaved ? '✅ Uploaded' : '⚠ Not uploaded'}`;
 
       document.getElementById('submissionMethod').textContent =
-        '✅ Sent to organizers via Formspree — no extra steps needed';
+        '✅ Saved to Google Sheets · Receipt in Google Drive';
 
       showStep('step3');
 
     } else {
-      // FIX: Parse error body and show meaningful message
-      let errMsg = `Submission failed (HTTP ${res.status}).`;
-      try {
-        const data = await res.json();
-        if(data.errors && data.errors.length){
-          errMsg = data.errors.map(e => e.message || e.field).join('; ');
-        } else if(data.error){
-          errMsg = data.error;
-        }
-      } catch(_){}
       fsStatus.style.display = 'none';
-      showErr('err2', errMsg + ' — Please use WhatsApp button below, or try again.');
-      // FIX: Re-enable button so user can retry
+      showErr('err2', (data.error || 'Submission failed.') + ' — Try again or use WhatsApp below.');
       btn.disabled = false;
       btn.innerHTML = '✅ &nbsp;Confirm &amp; Submit Registration';
     }
 
   } catch(networkErr){
+    const prog = document.getElementById('uploadProgress');
+    if(prog) prog.style.display = 'none';
     fsStatus.style.display = 'none';
     showErr('err2',
-      'Network error — please check your internet connection and try again. ' +
-      'Or use the WhatsApp button below to send your details directly.'
+      'Network error — check your internet and try again, or use the WhatsApp button below.'
     );
-    // FIX: Re-enable button on network failure
     btn.disabled = false;
     btn.innerHTML = '✅ &nbsp;Confirm &amp; Submit Registration';
-    console.error('Formspree network error:', networkErr);
+    console.error('Submission network error:', networkErr);
 
-    // FIX: Offer fallback — save locally and show step 3 with "offline" note
-    // so the user can still use WhatsApp/copy/download
+    // Save locally as fallback
     try {
-      const existing = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+      const existing = JSON.parse(localStorage.getItem(LS_KEY)||'[]');
       existing.push({...savedEntry, submittedVia:'offline-fallback'});
       localStorage.setItem(LS_KEY, JSON.stringify(existing));
     } catch(e){}
   }
 }
 
-// ─── BACKUP METHODS ────────────────────────────────────────────────────────────
+// ── BACKUP METHODS ─────────────────────────────────────────────────
 function buildText(e){
   return `===========================================
   VECTOR.IO HACKATHON 2026 — REGISTRATION
@@ -1066,37 +1046,28 @@ function doWhatsApp(){
 
 function doCopy(){
   const text = buildText(savedEntry);
-  const btn = document.getElementById('copyBtn');
+  const btn  = document.getElementById('copyBtn');
   const finish = () => {
     btn.textContent = '✓ Copied!';
-    btn.className = 'backup-btn copied';
+    btn.className   = 'backup-btn copied';
     setTimeout(() => { btn.textContent='Copy'; btn.className='backup-btn copy'; }, 2500);
   };
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(finish).catch(() => { fallbackCopy(text); finish(); });
-  } else {
-    fallbackCopy(text); finish();
-  }
+  navigator.clipboard
+    ? navigator.clipboard.writeText(text).then(finish).catch(() => { fallbackCopy(text); finish(); })
+    : (fallbackCopy(text), finish());
 }
-function fallbackCopy(text, cb){
+function fallbackCopy(text){
   const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position='fixed';ta.style.opacity='0';
-  document.body.appendChild(ta);
-  ta.select();
-  document.execCommand('copy');
-  document.body.removeChild(ta);
-  if(cb) cb();
+  ta.value = text; ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
 }
 
 function doDownload(){
-  const blob = new Blob([buildText(savedEntry)], {type:'text/plain;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  const blob = new Blob([buildText(savedEntry)],{type:'text/plain;charset=utf-8'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
   a.download = `vectorio-reg-${(savedEntry.team||'team').replace(/[^a-z0-9]/gi,'-')}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
 }
 
@@ -1113,7 +1084,7 @@ function clearSaved(){
   try { localStorage.removeItem(LS_KEY); alert('Cleared.'); } catch(e){}
 }
 
-// CSS for submit spinner
+// CSS spinner
 const style = document.createElement('style');
 style.textContent = '@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}'
 document.head.appendChild(style);
